@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pandemonium <pandemonium@student.42.fr>    +#+  +:+       +#+        */
+/*   By: lflayeux <lflayeux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 11:11:53 by pandemonium       #+#    #+#             */
-/*   Updated: 2025/07/24 10:15:20 by pandemonium      ###   ########.fr       */
+/*   Updated: 2025/08/08 16:40:58 by lflayeux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,20 +37,26 @@
 // ====================================
 // ============ STRUCTURE =============
 // ====================================
+typedef struct s_philo	t_philo;
 
 typedef struct s_shared
 {
-	int	total_philo;
-	int	time_to_die;
-	int	time_to_eat;
-	int	time_to_sleep;
-	int	total_meal;
+	t_philo		**philo;
+	pthread_mutex_t mutex;
+	pthread_mutex_t *mutex;
+	int			total_philo;
+	int			time_to_die;
+	int			time_to_eat;
+	int			time_to_sleep;
+	int			total_meal;
+	int			philo_dead;
 }				t_shared;
 
 typedef struct s_philo
 {
-	int		number;
-	t_shared *global;
+	pthread_t	thread;
+	int			number;
+	t_shared	*global;
 }				t_philo;
 
 

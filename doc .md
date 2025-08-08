@@ -37,5 +37,7 @@
 
 ## 2. TODO
 
-> - [ ] Shared struct
-> - [ ] Observer thread
+> - [] Shared struct
+> - [] Observer thread
+> - [] s'occuper des mutex pr les forks
+> - [] restructer les inits
