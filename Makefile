@@ -5,6 +5,7 @@ CFLAGS = -Wall -Werror -Wextra -g3
 NAME = philo
 
 SRC =	src/main.c \
+		src/init.c \
 
 GREEN = \033[32m
 RED = \033[31m

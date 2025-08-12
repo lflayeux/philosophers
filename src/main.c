@@ -6,7 +6,7 @@
 /*   By: lflayeux <lflayeux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 11:12:31 by pandemonium       #+#    #+#             */
-/*   Updated: 2025/08/08 16:35:23 by lflayeux         ###   ########.fr       */
+/*   Updated: 2025/08/12 18:06:57 by lflayeux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,28 +64,34 @@ void	print_valid_arg()
 			must be a positive integer\n");
 
 }
-void init_struct(t_philo *philo, t_shared *global, int argc, char  **argv)
+
+void	routine_eat(t_philo *philo)
 {
-	
-	(void)philo;
-	global->total_philo = ft_atoi(argv[1]);
-	global->philo = malloc(global->total_philo * sizeof(t_philo *));
-	pthread_mutex_init(&(global->mutex), NULL);
-	global->time_to_die = ft_atoi(argv[2]);
-	global->time_to_sleep = ft_atoi(argv[4]);
-	global->philo_dead = FALSE;
-	if (argc == 6)
-		global->total_meal = ft_atoi(argv[5]);
-	else
-		global->total_meal = NONE;
+	pthread_mutex_lock(&(philo->global->mutex));
+	if (philo->global->fork[philo->number] == 0)
+		printf("fork left %d \n", philo->number);
+	if (philo->global->fork[philo->number + 1] == 0)
+		printf("fork right %d \n", philo->number);
+	pthread_mutex_unlock(&(philo->global->mutex));
 }
+
+
 void *routine(void *arg)
 {
-    t_philo *philo = (t_philo *)arg;
-	pthread_mutex_lock(&(philo->global->mutex));
-    printf("Je suis le philo : %d\n", philo->number);
+	t_philo *philo;
+	int t;
+	
+	philo = (t_philo *)arg;
+	while ((philo->global->philo_dead) == FALSE)
+	{
+		t = 0;
+		routine_eat(philo);
+		philo->global->philo_dead = TRUE;
+	}
+	// pthread_mutex_lock(&(philo->global->mutex));
+    printf("timestamp_is_ms %d \n", philo->number);
 	printf("Encore  le philo : %d\n", philo->number);
-	pthread_mutex_unlock(&(philo->global->mutex));
+	// pthread_mutex_unlock(&(philo->global->mutex));
     return NULL;
 }
 
