@@ -6,6 +6,9 @@ NAME = philo
 
 SRC =	src/main.c \
 		src/init.c \
+		src/parsing.c \
+		src/philosopher.c \
+		src/utils.c \
 
 GREEN = \033[32m
 RED = \033[31m

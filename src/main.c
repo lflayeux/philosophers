@@ -3,96 +3,62 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lflayeux <lflayeux@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pandemonium <pandemonium@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 11:12:31 by pandemonium       #+#    #+#             */
-/*   Updated: 2025/08/12 18:06:57 by lflayeux         ###   ########.fr       */
+/*   Updated: 2025/08/17 17:00:34 by pandemonium      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "../inc/philo.h"
-
-int	ft_atoi(char *str)
+static int	all_ate_enough(t_shared *global)
 {
 	int	i;
-	int	result;
-	int	sign;
 
-	sign = 1;
+	if (global->total_meal == -1)
+		return (0);
 	i = 0;
-	result = 0;
-	while (str[i] == ' ' || (str[i] >= '\t' && str[i] <= '\r'))
-		i++;
-	if (str[i] == '+' || str[i] == '-')
+	while (i < global->total_philo)
 	{
-		if (str[i] == '-')
-			sign *= -1;
+		if (global->philo[i]->meal_eaten < global->total_meal)
+			return (0);
 		i++;
 	}
-	while (str[i] >= '0' && str[i] <= '9')
+	return (1);
+}
+
+void	*monitoring(void *arg)
+{
+	t_shared	*global = (t_shared *)arg;
+	long		now;
+	int			i;
+
+	while (!global->stop)
 	{
-		result = result * 10 + (str[i] - '0');
-		i++;
+		i = 0;
+		while (i < global->total_philo)
+		{
+			now = get_time_in_ms();
+			if ((now - global->philo[i]->last_meal) > global->time_to_die)
+			{
+				printf("%ld %d died\n", now - global->time_start, global->philo[i]->number);
+				pthread_mutex_lock(&(global->stop_mutex));
+				global->stop = 1;
+				pthread_mutex_unlock(&(global->stop_mutex));
+				return (NULL);
+			}
+			i++;
+		}
+		if (all_ate_enough(global))
+		{
+			pthread_mutex_lock(&(global->stop_mutex));
+			global->stop = 1;
+			pthread_mutex_unlock(&(global->stop_mutex));
+			return (NULL);
+		}
 	}
-	return (result * sign);
-}
-
-int	check_args(int argc, char **argv)
-{
-	int i;
-	int nb;
-
-	i = 1;
-	while (i < argc)
-	{
-		nb = ft_atoi(argv[i]);
-		if (nb < 0 || (i == 1 && nb == 0))
-			return (FALSE);
-		i++;
-	}
-	return (TRUE);
-}
-void	print_valid_arg()
-{
-	printf("\nUsage: ./philo " ARGS "\n\n");
-	printf("\t<num_of_philo>: must be a positive integer greater than 0\n");
-	printf("\t<time_to_die>: must be a positive integer\n");
-	printf("\t<time_to_eat>: must be a positive integer\n");
-	printf("\t<time_to_sleep>: must be a positive integer\n");
-	printf("\t[optional] <number_of_times_each_philosopher_must_eat>: \
-			must be a positive integer\n");
-
-}
-
-void	routine_eat(t_philo *philo)
-{
-	pthread_mutex_lock(&(philo->global->mutex));
-	if (philo->global->fork[philo->number] == 0)
-		printf("fork left %d \n", philo->number);
-	if (philo->global->fork[philo->number + 1] == 0)
-		printf("fork right %d \n", philo->number);
-	pthread_mutex_unlock(&(philo->global->mutex));
-}
-
-
-void *routine(void *arg)
-{
-	t_philo *philo;
-	int t;
-	
-	philo = (t_philo *)arg;
-	while ((philo->global->philo_dead) == FALSE)
-	{
-		t = 0;
-		routine_eat(philo);
-		philo->global->philo_dead = TRUE;
-	}
-	// pthread_mutex_lock(&(philo->global->mutex));
-    printf("timestamp_is_ms %d \n", philo->number);
-	printf("Encore  le philo : %d\n", philo->number);
-	// pthread_mutex_unlock(&(philo->global->mutex));
-    return NULL;
+	return (NULL);
 }
 
 void	run(t_philo *philo, t_shared *global)
@@ -101,14 +67,25 @@ void	run(t_philo *philo, t_shared *global)
 
 	i = 0;
 	(void)philo;
+	global->time_start = get_time_in_ms();
+	if (global->total_philo == 1)
+	{
+    	printf("0 ms [1] has taken a fork\n");
+    	ft_usleep(global->time_to_die);
+    	printf("%ld ms [1] died\n", get_time_in_ms() - global->time_start);
+    	return ;
+	}
+
 	while (i < global->total_philo)
 	{
 		global->philo[i] = malloc(sizeof(t_philo));
-		global->philo[i]->number = i + 1;
-		global->philo[i]->global = global;
+		init_philo(global->philo[i], global, i + 1);
+		global->philo[i]->last_meal = global->time_start;
 		pthread_create(&(global->philo[i]->thread), NULL, routine, (void *)global->philo[i]);
 		i++;
 	}
+	pthread_create(&(global->monitoring), NULL, monitoring, (void *)global);
+	pthread_join(global->monitoring, NULL);
 	i = 0;
 	while (i < global->total_philo)
 	{
@@ -126,8 +103,9 @@ int	main(int argc, char **argv)
 		return (printf("Usage: %s " ARGS "\n", argv[0]), (ERROR));
 	if (check_args(argc, argv) == FALSE)
 		return (print_valid_arg(), ERROR);
-	init_struct(&philo, &global, argc, argv);
+	// TODO ==> parse_error();
+	init_struct(&global, argc, argv);
 	run(&philo, &global);
-	pthread_mutex_destroy(&(global.mutex));
+	pthread_mutex_destroy(&(global.print));
 	return (SUCCESS);
 }
