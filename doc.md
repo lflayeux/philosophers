@@ -69,3 +69,26 @@ Le but est de simuler des philosophes qui mangent, dorment et pensent autour d'u
 - Penser à la gestion des erreurs et à la robustesse du programme.
 
 ---
+
+Structures
+t_shared → t_table ou t_env (plus parlant pour l’environnement commun)
+philo (variable locale) → philosopher (plus explicite)
+Variables
+stop → simulation_stop ou is_stopped
+print (mutex) → print_mutex
+fork (tableau de mutex) → forks
+monitoring (thread) → monitor_thread
+total_philo → philo_count
+total_meal → meal_goal
+time_start → start_time
+Fonctions
+init_struct → init_table ou init_env
+init_philo → init_philosopher
+routine_eat → philosopher_eat
+routine_sleep → philosopher_sleep
+routine_think → philosopher_think
+routine → philosopher_routine
+all_ate_enough → all_philosophers_satisfied
+safe_mutex_lock → lock_mutex_safe
+ft_usleep → sleep_ms
+get_time_in_ms → current_time_ms
