@@ -3,28 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pandemonium <pandemonium@student.42.fr>    +#+  +:+       +#+        */
+/*   By: lflayeux <lflayeux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 18:01:03 by lflayeux          #+#    #+#             */
-/*   Updated: 2025/08/17 17:02:17 by pandemonium      ###   ########.fr       */
+/*   Updated: 2025/08/18 18:13:16 by lflayeux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
 
-void	init_philo(t_philo *philo, t_shared *global ,int number)
+void	init_philosopher(t_philo *philo, t_table *global ,int number)
 {
 	philo->number = number;
 	philo->meal_eaten = 0;
 	philo->last_meal = 0;
-	philo->first_fork = &(global->fork[(number) % global->total_philo]);
-	philo->second_fork  = &(global->fork[number - 1]);
+	philo->first_fork = &(global->forks[(number) % global->total_philo]);
+	philo->second_fork  = &(global->forks[number - 1]);
 	pthread_mutex_init(&(philo->state_mutex), NULL);
 	philo->global = global;
 }
 
 
-void init_struct(t_shared *global, int argc, char  **argv)
+void init_table(t_table *global, int argc, char  **argv)
 {
 	int i;
 
@@ -38,16 +38,16 @@ void init_struct(t_shared *global, int argc, char  **argv)
 		global->total_meal = ft_atoi(argv[5]);
 	else
 		global->total_meal = NONE;
-	global->stop = FALSE;
-	global->time_start = get_time_in_ms();
-	global->fork = malloc(ft_atoi(argv[1]) * sizeof(pthread_mutex_t));
+	global->simulation_stop = FALSE;
+	global->start_time = current_time_ms();
+	global->forks = malloc(ft_atoi(argv[1]) * sizeof(pthread_mutex_t));
 	while (i < global->total_philo)
 	{
-		pthread_mutex_init(&(global->fork[i]), NULL);
+		pthread_mutex_init(&(global->forks[i]), NULL);
 		i++;
 	}
 	pthread_mutex_init(&(global->stop_mutex), NULL);
 	global->philo = malloc(global->total_philo * sizeof(t_philo *));
 }
 
-// MANQUE LE MONITORING ET LE MUTEX PRINT
+// MANQUE LE MONITORING ET LE MUTEX print

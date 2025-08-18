@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pandemonium <pandemonium@student.42.fr>    +#+  +:+       +#+        */
+/*   By: lflayeux <lflayeux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 11:11:53 by pandemonium       #+#    #+#             */
-/*   Updated: 2025/08/17 17:02:06 by pandemonium      ###   ########.fr       */
+/*   Updated: 2025/08/18 18:18:11 by lflayeux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
-
 
 // ====================================
 // ============ INCLUDES ==============
@@ -24,17 +23,8 @@
 # include	<pthread.h>
 # include	<sys/time.h>
 
-// ====================================
-// ============ DEFINES ===============
-// ====================================
-
-# define	TRUE 1
-# define	FALSE 0
-# define	SUCCESS 0
-# define	ERROR 1
-# define	NONE -1
-# define	ARGS "<num_of_philo> <time_to_die> <time_to_eat> <time_to_sleep> [optional]: <number_of_times_each_philosopher_must_eat>"
-
+# include	"./colors.h"
+# include	"./error.h"
 
 // ====================================
 // ============ STRUCTURE =============
@@ -49,14 +39,14 @@ typedef struct s_shared
 	int					time_to_eat;
 	int					time_to_sleep;
 	int					total_meal;
-	int					stop;
-	long				time_start;
-	pthread_t			monitoring;
-	pthread_mutex_t		*fork;
+	int					simulation_stop;
+	long				start_time;
+	pthread_t			monitor_thread;
+	pthread_mutex_t		*forks;
 	pthread_mutex_t 	print;
 	pthread_mutex_t		stop_mutex;
 	t_philo				**philo;
-}				t_shared;
+}				t_table;
 
 typedef struct s_philo
 {
@@ -67,15 +57,15 @@ typedef struct s_philo
 	pthread_mutex_t		*first_fork;
 	pthread_mutex_t		*second_fork;
 	pthread_mutex_t		state_mutex;
-	t_shared			*global;
+	t_table			*global;
 }				t_philo;
 
 // ====================================
 // ============== INIT.C ==============
 // ====================================
 
-void init_struct(t_shared *global, int argc, char  **argv);
-void	init_philo(t_philo *philo, t_shared *global ,int number);
+void	init_table(t_table *global, int argc, char  **argv);
+void	init_philosopher(t_philo *philo, t_table *global ,int number);
 
 
 // ====================================
@@ -90,17 +80,17 @@ int		ft_atoi(char *str);
 // =========== PHILOSOPHER.C ==========
 // ====================================
 
-void	routine_eat(t_philo *philo);
-void	*routine(void *arg);
+void	philosopher_eat(t_philo *philo);
+void	*philosopher_routine(void *arg);
 
 
 // ====================================
 // ============== UTILS.C =============
 // ====================================
 
-long get_time_in_ms(void);
+long current_time_ms(void);
 void ft_usleep(long time_in_ms);
-int safe_mutex_lock(pthread_mutex_t *m, t_shared *global);
+int safe_mutex_lock(pthread_mutex_t *m, t_table *global);
 
 
 #endif

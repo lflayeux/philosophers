@@ -46,8 +46,10 @@ fclean : clean
 
 re : fclean all
 
-valg : re
-	@valgrind --leak-check=full --show-leak-kinds=all \
-	--suppressions=rl_leak.supp --trace-children=yes --track-fds=yes ./minishell
+valg: re
+	@valgrind --leak-check=full --show-leak-kinds=all ./philo $(ARGS)
+
+helg: re
+	@valgrind --tool=helgrind ./philo $(ARGS)
 
 .PHONY: clean fclean re

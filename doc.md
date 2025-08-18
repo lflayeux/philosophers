@@ -48,7 +48,7 @@ Le but est de simuler des philosophes qui mangent, dorment et pensent autour d'u
 
 ## 3. TODO
 
-- [x] Définir la structure partagée (`t_shared`)
+- [x] Définir la structure partagée (`t_table`)
 - [x] Créer et initialiser les mutex pour les fourchettes
 - [x] Créer la routine des philosophes
 - [x] Créer le thread observateur (monitoring)
@@ -70,25 +70,26 @@ Le but est de simuler des philosophes qui mangent, dorment et pensent autour d'u
 
 ---
 
-Structures
-t_shared → t_table ou t_env (plus parlant pour l’environnement commun)
+<!-- Structures
+
+t_table → t_table ou t_env (plus parlant pour l’environnement commun)
 philo (variable locale) → philosopher (plus explicite)
 Variables
-stop → simulation_stop ou is_stopped
-print (mutex) → print_mutex
-fork (tableau de mutex) → forks
-monitoring (thread) → monitor_thread
+stop → simulation_stop ou is_stopped -->
+print (mutex) → print
+<!-- fork (tableau de mutex) → forks -->
+<!-- monitoring (thread) → monitor_thread
 total_philo → philo_count
 total_meal → meal_goal
-time_start → start_time
-Fonctions
+time_start → start_time -->
+<!-- Fonctions
 init_struct → init_table ou init_env
 init_philo → init_philosopher
 routine_eat → philosopher_eat
 routine_sleep → philosopher_sleep
-routine_think → philosopher_think
+philosopher_think → philosopher_think
 routine → philosopher_routine
-all_ate_enough → all_philosophers_satisfied
+all_philosopher_satisfied → all_philosophers_satisfied -->
 safe_mutex_lock → lock_mutex_safe
 ft_usleep → sleep_ms
-get_time_in_ms → current_time_ms
+current_time_ms → current_time_ms

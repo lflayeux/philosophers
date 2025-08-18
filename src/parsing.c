@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pandemonium <pandemonium@student.42.fr>    +#+  +:+       +#+        */
+/*   By: lflayeux <lflayeux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 12:52:18 by pandemonium       #+#    #+#             */
-/*   Updated: 2025/08/13 12:52:19 by pandemonium      ###   ########.fr       */
+/*   Updated: 2025/08/18 15:41:45 by lflayeux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,20 @@ int	ft_atoi(char *str)
 	return (result * sign);
 }
 
+int ft_isnum(char *str)
+{
+	int i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (FALSE);
+		i++;
+	}
+	return (TRUE);
+}
+
 int	check_args(int argc, char **argv)
 {
 	int i;
@@ -45,6 +59,8 @@ int	check_args(int argc, char **argv)
 	i = 1;
 	while (i < argc)
 	{
+		if (!ft_isnum(argv[i]))
+			return (FALSE);
 		nb = ft_atoi(argv[i]);
 		if (nb < 0 || (i == 1 && nb == 0))
 			return (FALSE);
@@ -54,12 +70,13 @@ int	check_args(int argc, char **argv)
 }
 void	print_valid_arg()
 {
-	printf("\nUsage: ./philo " ARGS "\n\n");
-	printf("\t<num_of_philo>: must be a positive integer greater than 0\n");
-	printf("\t<time_to_die>: must be a positive integer\n");
-	printf("\t<time_to_eat>: must be a positive integer\n");
-	printf("\t<time_to_sleep>: must be a positive integer\n");
-	printf("\t[optional] <number_of_times_each_philosopher_must_eat>: \
-			must be a positive integer\n");
+	printf("\n");
+	printf(BOLD_RED "Usage: ./philo " ARGS_MESS RESET);
+	printf("\n\n");
+	printf(BOLD_RED "\t<num_of_philo>: "	RESET ERROR_ARG_MESS_1 "\n");
+	printf(BOLD_RED "\t<time_to_die>: "		RESET ERROR_ARG_MESS "\n");
+	printf(BOLD_RED "\t<time_to_eat>: "		RESET ERROR_ARG_MESS "\n");
+	printf(BOLD_RED "\t<time_to_sleep>: "	RESET ERROR_ARG_MESS "\n");
+	printf(BOLD_RED "\t" OPTION	RESET ERROR_ARG_MESS "\n");
 
 }

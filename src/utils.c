@@ -1,6 +1,6 @@
 #include "../inc/philo.h"
 
-long get_time_in_ms(void)
+long current_time_ms(void)
 {
     struct timeval tv;
 
@@ -9,27 +9,27 @@ long get_time_in_ms(void)
 }
 void ft_usleep(long time_in_ms)
 {
-    long time_start;
+    long start_time;
     long now;
 
-    time_start = get_time_in_ms();
+    start_time = current_time_ms();
     while (1)
     {
-        now = get_time_in_ms();
-        if (now - time_start >= time_in_ms)
+        now = current_time_ms();
+        if (now - start_time >= time_in_ms)
             break;
         usleep(100);
     }
 }
 
-int safe_mutex_lock(pthread_mutex_t *m, t_shared *global)
+int safe_mutex_lock(pthread_mutex_t *m, t_table *global)
 {
-	int stopped;
+	int simulation_stopped;
 
 	pthread_mutex_lock(&(global->stop_mutex));
-	stopped = global->stop;
+	simulation_stopped = global->simulation_stop;
 	pthread_mutex_unlock(&(global->stop_mutex));
-    if (stopped)
+    if (simulation_stopped)
         return (1);
     if (pthread_mutex_lock(m) != 0)
         return (1);
