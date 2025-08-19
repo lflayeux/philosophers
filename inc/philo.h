@@ -6,7 +6,7 @@
 /*   By: lflayeux <lflayeux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 11:11:53 by pandemonium       #+#    #+#             */
-/*   Updated: 2025/08/18 18:18:11 by lflayeux         ###   ########.fr       */
+/*   Updated: 2025/08/19 14:29:26 by lflayeux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,6 @@ int		ft_atoi(char *str);
 void	philosopher_eat(t_philo *philo);
 void	*philosopher_routine(void *arg);
 
-
 // ====================================
 // ============== UTILS.C =============
 // ====================================
@@ -92,5 +91,10 @@ long current_time_ms(void);
 void ft_usleep(long time_in_ms);
 int safe_mutex_lock(pthread_mutex_t *m, t_table *global);
 
+// ====================================
+// ============== UTILS.C =============
+// ====================================
+
+void	*monitoring(void *arg);
 
 #endif

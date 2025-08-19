@@ -9,6 +9,7 @@ SRC =	src/main.c \
 		src/parsing.c \
 		src/philosopher.c \
 		src/utils.c \
+		src/monitoring.c \
 
 GREEN = \033[32m
 RED = \033[31m
