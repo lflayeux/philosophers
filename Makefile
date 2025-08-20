@@ -1,6 +1,6 @@
 CC = cc
 
-CFLAGS = -Wall -Werror -Wextra -g3 
+CFLAGS = -Wall -Werror -Wextra -g3 -pthread
 
 NAME = philo
 
@@ -8,6 +8,7 @@ SRC =	src/main.c \
 		src/init.c \
 		src/parsing.c \
 		src/philosopher.c \
+		src/philosopher_eat.c \
 		src/utils.c \
 		src/monitoring.c \
 
@@ -48,9 +49,9 @@ fclean : clean
 re : fclean all
 
 valg: re
-	@valgrind --leak-check=full --show-leak-kinds=all ./philo $(ARGS)
+	@valgrind --show-leak-kinds=all --leak-check=full --fair-sched=yes ./philo $(ARGS)
 
 helg: re
-	@valgrind --tool=helgrind ./philo $(ARGS)
+	@valgrind --tool=drd --tool=helgrind --fair-sched=yes ./philo $(ARGS)
 
 .PHONY: clean fclean re
